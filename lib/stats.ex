@@ -1,20 +1,46 @@
 defmodule Stats do
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
+  defdelegate notify(values), to: Stats.Server
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # Define workers and child supervisors to be supervised
     children = [
-      # Starts a worker by calling: Stats.Worker.start_link(arg1, arg2, arg3)
-      # worker(Stats.Worker, [arg1, arg2, arg3]),
+      worker(Stats.Server, [])
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
+    start_backends_deps(backends)
+
     opts = [strategy: :one_for_one, name: Stats.Supervisor]
-    Supervisor.start_link(children, opts)
+    Supervisor.start_link(backends_spec(backends) ++ children, opts)
+  end
+
+  def backends do
+    Application.get_env(:stats, :backends, [])
+  end
+
+  def default_database do
+    Application.get_env(:stats, :default_database, "stats")
+  end
+
+  def default_table do
+    Application.get_env(:stats, :default_table, "stats")
+  end
+
+  defp backends_spec(backends) do
+    Enum.flat_map(backends, fn backend ->
+      backend.supervisor_spec
+    end)
+  end
+
+  defp start_backends_deps(backends) do
+    Enum.each(backends, &start_backend_deps/1)
+  end
+
+  defp start_backend_deps(backend) do
+    Enum.each(backend.application_deps, fn app ->
+      {:ok, _} = Application.ensure_all_started(app)
+    end)
   end
 end
