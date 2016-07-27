@@ -8,7 +8,13 @@ defmodule Stats.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps,
-     aliases: aliases]
+     aliases: aliases,
+     package: package,
+     description: description]
+  end
+
+  def description do
+    "Wrapper for stats libraries"
   end
 
   def application do
@@ -23,5 +29,13 @@ defmodule Stats.Mixfile do
 
   defp aliases do
     ["test": ["test --no-start"]]
+  end
+
+  defp package do
+    [name: :stats,
+     files: ["lib", "mix.exs"],
+     maintainers: ["Yuri Artemev"],
+     licenses: ["MIT"],
+     links: %{"GitHub" => "https://github.com/artemeff/stats"}]
   end
 end
