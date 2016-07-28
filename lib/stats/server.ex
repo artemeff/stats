@@ -32,6 +32,7 @@ defmodule Stats.Server do
   end
 
   def handle_cast({:notify, values}, %{buffer: buffer} = state) do
+    values = assign_timestamp(values)
     {:noreply, %{state|buffer: [values|buffer]}}
   end
   def handle_cast(_, state) do
@@ -46,6 +47,13 @@ defmodule Stats.Server do
     start_timer
 
     {:noreply, %{state|buffer: []}}
+  end
+
+  defp assign_timestamp(%Stats.Series{timestamp: nil} = series) do
+    %{series|timestamp: System.os_time(:nanoseconds)}
+  end
+  defp assign_timestamp(series) do
+    series
   end
 
   defp start_timer do

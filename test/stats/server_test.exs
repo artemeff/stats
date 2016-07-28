@@ -24,10 +24,14 @@ defmodule Stats.ServerTest do
     {:ok, %{series: series}}
   end
 
+  setup do
+    wait_sync
+  end
+
   test "server saves to buffer", %{series: series} do
     Stats.notify(series)
 
-    assert [^series] = Server.buffer
+    assert [%{values: %{key: 42.42}, timestamp: _, options: %{}}] = Server.buffer
   end
 
   test "server cleans buffer after notify_interval", %{series: series} do
@@ -41,14 +45,12 @@ defmodule Stats.ServerTest do
   end
 
   test "server sends to backends after notify_interval", %{series: series} do
-    wait_sync
+    test_pid = self
 
-    with_mock Stub, [notify_values: fn(_values) -> :ok end] do
+    with_mock Stub, [notify_values: fn(values) -> send(test_pid, values) end] do
       Stats.notify(series)
 
-      wait_sync
-
-      assert called Stub.notify_values([series])
+      assert_receive [%{values: %{key: 42.42}, timestamp: _, options: %{}}], 500
       assert [] = Server.buffer
     end
   end
