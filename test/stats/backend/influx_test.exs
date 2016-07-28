@@ -42,9 +42,10 @@ defmodule Stats.Backend.InfluxTest do
 
     assert length(values) == 3
     assert length(columns) == 4
-    assert cpu == 1.9
-    assert mem == 1900
-    assert tag == nil
+
+    assert [_, 1.1, 1000, nil]    = Enum.at(values, 0)
+    assert [_, 5.4, 1100, "test"] = Enum.at(values, 1)
+    assert [_, 1.9, 1900, nil]    = Enum.at(values, 2)
   end
 
   defp get_measurements(name, db) do
