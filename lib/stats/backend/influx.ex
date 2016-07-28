@@ -17,10 +17,7 @@ defmodule Stats.Backend.Influx do
   def notify_values(values) do
     values = Enum.map(values, &from_series/1)
 
-    # FIXME batch writing
-    Enum.each(values, fn value ->
-      write(value, async: true)
-    end)
+    write(values, async: true)
   end
 
   # FIXME list of points from values
