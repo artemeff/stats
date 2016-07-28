@@ -38,7 +38,6 @@ defmodule Stats.Backend.InfluxTest do
 
     %{results: [%{series: [series|_]}|_]} = result
     %{columns: columns, values: values} = series
-    [[_time, cpu, mem, tag]|_] = values
 
     assert length(values) == 3
     assert length(columns) == 4

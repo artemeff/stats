@@ -21,7 +21,7 @@ defmodule Stats.Backend.Influx do
   end
 
   # FIXME list of points from values
-  defp from_series(%Stats.Series{values: fields, options: options, timestamp: timestamp} = series) do
+  defp from_series(%Stats.Series{values: fields, options: options, timestamp: timestamp} = _series) do
     %{
       database: Map.get(options, :database, Stats.default_database),
       points: [points(fields, timestamp, options)]
