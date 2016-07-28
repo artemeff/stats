@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.1.1-dev (2016-07-28)
+## v0.1.1 (2016-07-28)
 
 - Enhancements
     - Assigns current timestamp value for Series in notify.
