@@ -49,7 +49,9 @@ And provide configuration for stats and instream:
 ```elixir
 config :stats,
   backends: [Stats.Backend.Influx],
-  notify_interval: 500
+  notify_interval: 500,
+  default_database: "stats",
+  default_table: "stats"
 
 # for configuration see https://github.com/mneudert/instream#usage
 config :stats, Stats.Backend.Influx,
@@ -75,7 +77,7 @@ Struct for dealing with different backends, contains:
 * `values` — map with your measurements;
 * `timestamp` — timestamp, if `nil` it uses current time with nanoseconds precision;
 * `options` — map with additional options for each backend, only part that have different behavior
-  depends on backend, like database  or table names. For InfluxDB it may have `:tags` field.
+  depends on backend, like database or table names. For InfluxDB it may have `:tags` field.
 
 ## Contributing
 
